@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from mystock.core.constants import ALLOWED_MARKETS
+from mystock.core.constants import MARKETS
 from stocks.models import Market
 
 
@@ -9,10 +9,7 @@ class MarketTestCase(TestCase):
         Market.objects.initialize_markets()
 
     def test_is_exists_market(self):
-        # given
-        market_names = ALLOWED_MARKETS
-
         # when
-        for name in market_names:
+        for market_name in MARKETS:
             # then
-            self.assertTrue(Market.objects.is_exists_market(name))
+            self.assertTrue(Market.objects.is_exists_market(market_name))

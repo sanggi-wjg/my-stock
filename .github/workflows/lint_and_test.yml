@@ -1,0 +1,49 @@
+name: Lint && Test
+
+on:
+  pull_request:
+    branches: [ chore/**, feature/** ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  black:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Black
+        uses: psf/black@stable
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: # https://raw.githubusercontent.com/actions/python-versions/main/versions-manifest.json
+        os: [ macos-latest, ubuntu-latest, windows-latest ]
+        python-version: [ "3.9","3.10","3.11" ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Set-up Environ
+        run: |
+          docker-compose -f infra/docker-compose-db.yaml up -d
+          sleep 5
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run Tests
+        run: |
+          python manage.py test

@@ -11,7 +11,9 @@ class StockQuerySet(models.QuerySet):
 
         dataset = fdr.StockListing(market.name)
         not_exist_stocks = [
-            row for date, row in dataset.iterrows() if row["Code"] not in exist_stock_codes
+            row
+            for date, row in dataset.iterrows()
+            if row["Code"] not in exist_stock_codes
         ]
 
         new_stocks = [

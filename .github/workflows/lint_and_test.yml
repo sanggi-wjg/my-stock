@@ -2,7 +2,7 @@ name: Lint && Test
 
 on:
   pull_request:
-    branches: [ chore/**, feature/** ]
+    branches: [ main, chore/**, feature/** ]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -37,7 +37,6 @@ jobs:
       - name: Set-up Environ
         run: |
           docker-compose -f infra/docker-compose-db.yaml up -d
-          sleep 5
 
       - name: Install Dependencies
         run: |

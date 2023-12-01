@@ -8,7 +8,7 @@ class MarketQuerySet(models.QuerySet):
         for market_name in ALLOWED_MARKETS:
             self.get_or_create(name=market_name)
 
-    def is_exists_market(self, market_name):
+    def is_exists_market(self, market_name: str):
         return self.filter(name=market_name).exists()
 
 

@@ -1,0 +1,48 @@
+None
+
+db.sqlite3
+*.sql
+*.pyc
+__pycache__
+.DS_Store
+*.swp
+logs/
+temp/
+.env
+.envrc
+.*.env
+.idea
+.tool-versions
+yarn.lock
+fitpet/settings/local.py
+*.ipynb
+fitpet/media/
+fitpet/static/
+fitpet/assets/
+.vscode/
+.coverage
+.graphqlconfig
+#migrations/
+#*/migrations/0*.py
+
+# for pyenv
+.python-version
+*~
+notebook/
+pyrightconfig.json
+
+# cellery
+celerybeat-schedule
+celerybeat-schedule.db
+celerybeat.pid
+
+# for GraphQL
+schema.json
+schema.graphql
+venv
+
+# for local
+.tmp
+
+temp/
+.direnv/

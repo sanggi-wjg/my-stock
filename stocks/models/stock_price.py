@@ -18,7 +18,7 @@ class StockPrice(models.Model):
             models.UniqueConstraint(
                 fields=["stock", "date"],
                 name="unique_stock_price_001",
-            )
+            ),
         ]
 
     date = models.DateField(db_index=True)

@@ -20,7 +20,7 @@
     </EXTENSION>
     <option name="launchJavascriptDebuger" value="false" />
     <option name="host" value="" />
-    <option name="additionalOptions" value="--stocks 삼성전자 NAVER SK하이닉스 현대차" />
+    <option name="additionalOptions" value="--stocks LG에너지솔루션 SK하이닉스 삼성바이오로직스 삼성전자우 POSCO홀딩스 현대차 기아 LG화학 NAVER " />
     <option name="browserUrl" value="" />
     <option name="runTestServer" value="false" />
     <option name="runNoReload" value="false" />

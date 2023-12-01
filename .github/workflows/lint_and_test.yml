@@ -37,7 +37,6 @@ jobs:
       - name: Set-up Environ
         run: |
           docker-compose -f infra/docker-compose-db.yaml up -d
-          sleep 5
 
       - name: Install Dependencies
         run: |

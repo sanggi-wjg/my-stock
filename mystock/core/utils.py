@@ -2,6 +2,8 @@ import logging
 import math
 from decimal import Decimal
 
+from django.utils import timezone
+
 
 class MyLogger:
     def __init__(self):
@@ -31,3 +33,7 @@ def check_nan_return_or_zero(value) -> Decimal:
         return Decimal("0")
     else:
         return Decimal(value)
+
+
+def get_now_text(date_format: str = "%Y-%m-%d %H:%M:%S") -> str:
+    return timezone.now().strftime(date_format)

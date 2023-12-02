@@ -5,6 +5,10 @@ from stocks.models import Market
 
 
 class MarketTestCase(TestCase):
+
+    def setUp(self):
+        pass
+
     def test_is_exists_market(self):
         # given
         market_name = "KOSPI"

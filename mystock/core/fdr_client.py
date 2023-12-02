@@ -1,10 +1,8 @@
 import FinanceDataReader as fdr
+import pandas as pd
 
 
-class MyFDR:
-    def __init__(self):
-        pass
-
-
-class StockFDR(MyFDR):
-    pass
+class StockFdr:
+    @classmethod
+    def stock_listing(cls, market_name: str) -> pd.DataFrame:
+        return fdr.StockListing(market_name)

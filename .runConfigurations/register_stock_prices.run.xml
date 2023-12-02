@@ -20,7 +20,7 @@
     </EXTENSION>
     <option name="launchJavascriptDebuger" value="false" />
     <option name="host" value="" />
-    <option name="additionalOptions" value="--stocks 삼성전자 LG에너지솔루션 SK하이닉스 삼성바이오로직스 삼성전자우 POSCO홀딩스 현대차 기아 LG화학 NAVER 삼성SDI 포스코퓨처엠 셀트리온 카카오 삼성물산 현대모비스 KB금융 신한지주 " />
+    <option name="additionalOptions" value="--stocks 삼성전자 LG에너지솔루션 SK하이닉스 삼성바이오로직스 삼성전자우 POSCO홀딩스 현대차 기아 LG화학 NAVER 삼성SDI 포스코퓨처엠 셀트리온 카카오 삼성물산 현대모비스 KB금융 신한지주 LG전자 삼성생명 SK이노베이션 삼성에스디에스 LG 한국전력 하나금융지주 삼성화재 카카오뱅크 SK KT&amp;G 메리츠금융지주 HD현대중공업 SK텔레콤 삼성전기 HMM 크래프톤 고려아연 포스코인터내셔널 두산에너빌리티 우리금융지주 기업은행 에코프로머티 하이브 KT 한화오션 대한항공 HD한국조선해양 S-Oil 아모레퍼시픽 삼성중공업 금양 한화에어로스페이스 SK스퀘어 롯데케미칼 SK바이오팜 현대글로비스 카카오페이 엔씨소프트 한미반도체 DB손해보험 두산로보틱스 한국타이어앤테크놀로지 LG이노텍 한화솔루션 맥쿼리인프라 SK바이오사이언스 코스모신소재 LG생활건강 넷마블 SK아이이테크놀로지 현대오토에버 삼성엔지니어링 HD현대 유한양행 CJ제일제당 한국항공우주 현대제철 오리온 LG유플러스 LG디스플레이 두산밥캣 미래에셋증권 현대건설 현대차2우B 한미약품 한온시스템 GS 삼성카드 코웨이 금호석유 SKC 한진칼 삼성증권 NH투자증권 강원랜드 한국금융지주 현대미포조선 F&amp;F HD현대일렉트릭 한화시스템 현대로템 " />
     <option name="browserUrl" value="" />
     <option name="runTestServer" value="false" />
     <option name="runNoReload" value="false" />

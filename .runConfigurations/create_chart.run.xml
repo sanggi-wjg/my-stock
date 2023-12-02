@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="register_stock_prices" type="Python.DjangoServer" factoryName="Django server">
+  <configuration default="false" name="create_chart" type="Python.DjangoServer" factoryName="Django server">
     <module name="mystock" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
@@ -20,12 +20,12 @@
     </EXTENSION>
     <option name="launchJavascriptDebuger" value="false" />
     <option name="host" value="" />
-    <option name="additionalOptions" value="--stocks 삼성전자 LG에너지솔루션 SK하이닉스 삼성바이오로직스 삼성전자우 POSCO홀딩스 현대차 기아 LG화학 NAVER 삼성SDI 포스코퓨처엠 셀트리온 카카오 삼성물산 현대모비스 KB금융 신한지주 " />
+    <option name="additionalOptions" value="-t 삼성전자 NAVER" />
     <option name="browserUrl" value="" />
     <option name="runTestServer" value="false" />
     <option name="runNoReload" value="false" />
     <option name="useCustomRunCommand" value="true" />
-    <option name="customRunCommand" value="register_stock_prices" />
+    <option name="customRunCommand" value="create_chart" />
     <method v="2" />
   </configuration>
 </component>

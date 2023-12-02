@@ -31,8 +31,18 @@ class Stock(models.Model):
 
     class Meta:
         db_table = "stock"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["market", "code"],
+                name="unique_stock_001",
+            ),
+            models.UniqueConstraint(
+                fields=["market", "name"],
+                name="unique_stock_002",
+            ),
+        ]
 
-    code = models.CharField(max_length=50, unique=True, db_index=True)
+    code = models.CharField(max_length=50, db_index=True)
     name = models.CharField(max_length=100, db_index=True)
 
     # relation

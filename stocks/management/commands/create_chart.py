@@ -34,7 +34,7 @@ class Command(BaseCommand):
         for stock_name in targets:
             stock_prices = StockPrice.objects.filter(
                 stock__name=stock_name, date__gte=start, date__lte=end
-            )
+            ).order_by("date")
             if not stock_prices.exists():
                 logger.warning(f"{stock_name} does not exist")
 

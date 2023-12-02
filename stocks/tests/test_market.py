@@ -5,7 +5,6 @@ from stocks.models import Market
 
 
 class MarketTestCase(TestCase):
-
     def setUp(self):
         pass
 

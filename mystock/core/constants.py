@@ -1,27 +1,28 @@
-ALLOWED_MARKETS = [
-    "KOSPI",
-    "KOSDAQ",
-    "S&P500",
-    "NASDAQ",
-]
+from django.db import models
 
-ALLOW_INDEXES = [
-    # 환율
-    "USD/KRW",
-    # 미국
-    "DJI",  # 다우 존스
-    "S&P500",  # S&P 500
-    "IXIC",  # NASDAQ
-    "VIX",  # 변동성 지수 (Greed And Fear)
+MARKET_TYPE_STOCK = "STOCK"
+MARKET_TYPE_INDEX = "INDEX"
+
+MARKETS = [
+    # 마켓
+    ("KOSPI", MARKET_TYPE_STOCK),
+    ("KOSDAQ", MARKET_TYPE_STOCK),
+    # ("S&P500", 0),
+    # ("NASDAQ", 0),
     # 한국
-    "KS11",  # KOSPI
-    "KS100",  # KOSPI 100
-    "KS200",  # KOSPI 200
-    "KQ11",  # KOSDAQ
+    ("KS11", MARKET_TYPE_INDEX),  # KOSPI
+    ("KS100", MARKET_TYPE_INDEX),  # KOSPI 100
+    ("KS200", MARKET_TYPE_INDEX),  # KOSPI 200
+    ("KQ11", MARKET_TYPE_INDEX),  # KOSDAQ
+    # 미국
+    ("IXIC", MARKET_TYPE_INDEX),  # NASDAQ
+    ("VIX", MARKET_TYPE_INDEX),  # 변동성 지수 (Greed And Fear)
+    # 환율
+    ("USD/KRW", MARKET_TYPE_INDEX),
     # 선물
-    "CL=F",  # WTI
-    "NG=F",  # 천연 가스
-    "GC=F",  # 금
-    "SI=F",  # 은
-    "HG=f",  # 구리
+    ("CL=F", MARKET_TYPE_INDEX),  # WTI
+    ("NG=F", MARKET_TYPE_INDEX),  # 천연 가스
+    ("GC=F", MARKET_TYPE_INDEX),  # 금
+    ("SI=F", MARKET_TYPE_INDEX),  # 은
+    ("HG=f", MARKET_TYPE_INDEX),  # 구리
 ]

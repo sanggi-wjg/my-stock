@@ -26,8 +26,6 @@ jobs:
 
       - name: Commit and push new tag
         run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
           git tag ${{ steps.create_tag.outputs.tag }}
           git push origin ${{ steps.create_tag.outputs.tag }}
 

@@ -3,7 +3,10 @@ import math
 from decimal import Decimal
 from typing import List, Tuple
 
+import pandas as pd
 from django.utils import timezone
+from matplotlib import dates
+from matplotlib.dates import YearLocator, DateFormatter, MonthLocator
 
 
 class MyLogger:
@@ -30,10 +33,7 @@ logger = MyLogger()
 
 
 def check_nan_return_or_zero(value) -> Decimal:
-    if math.isnan(value):
-        return Decimal("0")
-    else:
-        return Decimal(value)
+    return Decimal(value) if not math.isnan(value) else Decimal("0")
 
 
 def get_now_text(date_format: str = "%Y-%m-%d %H:%M:%S") -> str:
@@ -60,12 +60,14 @@ def financial_crises() -> List[Tuple[str, str, str]]:
     ]
 
 
-# def plt_year_format() -> Tuple[YearLocator, DateFormatter]:
-#     return dates.YearLocator(), dates.DateFormatter("%Y")
-#
-#
-# def plt_year_month_format() -> Tuple[MonthLocator, DateFormatter]:
-#     return dates.MonthLocator(), dates.DateFormatter("%Y-%M")
+def plt_year_format() -> Tuple[YearLocator, DateFormatter]:
+    return dates.YearLocator(), dates.DateFormatter("%Y")
+
+
+def plt_year_month_format() -> Tuple[MonthLocator, DateFormatter]:
+    return dates.MonthLocator(), dates.DateFormatter("%Y-%M")
+
+
 #
 def plt_colors(no) -> str:
     colors = ["blue", "green", "red", "cyan", "magenta", "yellow"]
@@ -77,3 +79,32 @@ def debug_fonts():
 
     f = [f.name for f in fm.fontManager.ttflist]
     logger.debug(f)
+
+
+def earning_rate(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    수익률
+    :return: 수익률
+    """
+    df = (df / df.iloc[0]) - Decimal(1.0)
+    return df
+
+
+def standardize(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    정규화, 표준화 https://bskyvision.com/849
+    :return: 표준화
+    """
+    df["Price"] = pd.to_numeric(df["Price"])
+    mean, std = df.mean(axis=0), df.std(axis=0)
+    return (df["Price"] - mean["Price"]) / std["Price"]
+
+
+def normalize(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    정규화, 표준화 https://bskyvision.com/849
+    :return: 정규화
+    :rtype:
+    """
+    max_v, min_v = df.max(axis=0), df.min(axis=0)
+    return (df["Price"] - min_v["Price"]) / (max_v["Price"] - min_v["Price"])

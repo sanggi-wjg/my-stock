@@ -20,7 +20,7 @@
     </EXTENSION>
     <option name="launchJavascriptDebuger" value="false" />
     <option name="host" value="" />
-    <option name="additionalOptions" value="-t 삼성전자 NAVER" />
+    <option name="additionalOptions" value="-t NAVER 카카오" />
     <option name="browserUrl" value="" />
     <option name="runTestServer" value="false" />
     <option name="runNoReload" value="false" />

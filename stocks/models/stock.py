@@ -1,6 +1,8 @@
 import FinanceDataReader as fdr
 from django.db import models
 
+from mystock.core.fdr_client import StockFdr
+
 
 class StockQuerySet(models.QuerySet):
     def initialize_stocks(self, market_name: str):
@@ -9,7 +11,7 @@ class StockQuerySet(models.QuerySet):
         market = Market.objects.get(name=market_name)
         exist_stock_codes = self.get_all_codes()
 
-        dataset = fdr.StockListing(market.name)
+        dataset = StockFdr.stock_listing(market_name)
         not_exist_stocks = [
             row
             for date, row in dataset.iterrows()

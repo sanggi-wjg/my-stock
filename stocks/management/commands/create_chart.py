@@ -24,7 +24,7 @@ class _CommandOption:
     end_date: str
     is_standardize: bool
     is_normalize: bool
-    is_earning: bool
+    is_earning_rate: bool
 
 
 class Command(BaseCommand):
@@ -51,7 +51,7 @@ class Command(BaseCommand):
             end_date=options.get("end"),
             is_standardize=options.get("standardize"),
             is_normalize=options.get("normalize"),
-            is_earning=options.get("earning"),
+            is_earning_rate=options.get("earning"),
         )
 
         dfs = []
@@ -76,7 +76,7 @@ class Command(BaseCommand):
                 df = standardize(df)
             if command_option.is_normalize:
                 df = normalize(df)
-            if command_option.is_earning:
+            if command_option.is_earning_rate:
                 df = earning_rate(df)
 
             dfs.append(df)

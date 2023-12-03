@@ -1,5 +1,4 @@
 from datetime import datetime
-from decimal import Decimal
 
 import FinanceDataReader as fdr
 from django.core.management import BaseCommand
@@ -11,15 +10,16 @@ log = logger
 
 
 class Command(BaseCommand):
-    # def add_arguments(self, parser):
-    #     parser.add_argument("--stocks", nargs="+", type=str, required=True)
-    #     """
-    #     --stocks 쌍용C&E 롯데지주 현대해상 LS CJ
-    #     """
+    def add_arguments(self, parser):
+        parser.add_argument("--stocks", nargs="+", type=str, default=[], required=False)
+        """
+        --stocks 쌍용C&E 롯데지주 현대해상 LS CJ
+        """
 
     def handle(self, *args, **options):
-        # stocks = Stock.objects.filter(name__in=options.get("stocks", []))
         stocks = Stock.objects.all()
+        if len(options["stocks"]) > 0:
+            stocks = stocks.filter(name__in=options["stocks"])
 
         for stock in stocks:
             last_stock_price = StockPrice.objects.find_recent_of_stock(stock)
@@ -32,14 +32,14 @@ class Command(BaseCommand):
             new_stock_prices = [
                 StockPrice(
                     date=datetime.strptime(date.strftime("%y-%m-%d"), "%y-%m-%d"),
-                    price_open=Decimal(row["Open"]),
-                    price_close=Decimal(row["Close"]),
-                    price_high=Decimal(row["High"]),
-                    price_low=Decimal(row["Low"]),
-                    price_change=check_nan_return_or_zero(row["Change"]),
+                    price_open=check_nan_return_or_zero(row.get("Open", 0)),
+                    price_close=check_nan_return_or_zero(row.get("Close", 0)),
+                    price_high=check_nan_return_or_zero(row.get("High", 0)),
+                    price_low=check_nan_return_or_zero(row.get("Low", 0)),
+                    price_change=check_nan_return_or_zero(row.get("Change", 0)),
                     stock=stock,
                 )
                 for date, row in dataset.iterrows()
             ]
             StockPrice.objects.bulk_create(new_stock_prices, batch_size=1000)
-            log.info(f"{stock.name} prices created, total rows: {len(new_stock_prices)}.")
+            log.info(f"{stock.name} created, rows: {len(new_stock_prices)}.")

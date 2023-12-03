@@ -3,8 +3,7 @@ from unittest.mock import patch
 import pandas as pd
 from django.test import TestCase
 
-from mystock.core.constants import MARKET_TYPE_STOCK
-from stocks.models import Stock, Market
+from stocks.models import Stock
 
 
 class StockTestCase(TestCase):
@@ -23,10 +22,8 @@ class StockTestCase(TestCase):
     )
     def test_initialize(self, mock):
         # given
-        market = Market.objects.create(type=MARKET_TYPE_STOCK, name="KOSPI")
-
         # when
-        Stock.objects.initialize_stocks(market.name)
+        Stock.objects.initialize_stocks()
 
         # then
         self.assertTrue(Stock.objects.filter(code="005930").exists())

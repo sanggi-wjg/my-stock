@@ -22,7 +22,7 @@ class StockTypeEnum(models.TextChoices):
 
 class StockQuerySet(models.QuerySet):
     def initialize_stocks(self):
-        for value, label in StockMarketEnum.choices:
+        for value, _ in StockMarketEnum.choices:
             if value == StockMarketEnum.GLOBAL_INDEX:
                 continue
 
@@ -49,22 +49,23 @@ class StockQuerySet(models.QuerySet):
             self.bulk_create(new_stocks, batch_size=DEFAULT_BATCH_SIZE)
 
     def initialize_stock_indexes(self):
-        exist_index_names = self.filter(
+        exist_index_codes = self.filter(
             type=StockTypeEnum.INDEX,
-            name__in=INDEXES,
-        ).values_list("name", flat=True)
+            code__in=(code for (code, _) in INDEXES),
+        ).values_list("code", flat=True)
 
         not_exist_indexes = [
-            index_name for index_name in INDEXES if index_name not in exist_index_names
+            (code, name) for (code, name) in INDEXES if code not in exist_index_codes
         ]
 
         new_indexes = [
             Stock(
                 market=StockMarketEnum.GLOBAL_INDEX,
                 type=StockTypeEnum.INDEX,
-                name=index_name,
+                code=code,
+                name=name,
             )
-            for index_name in not_exist_indexes
+            for (code, name) in not_exist_indexes
         ]
         self.bulk_create(new_indexes, batch_size=DEFAULT_BATCH_SIZE)
 
@@ -89,5 +90,5 @@ class Stock(models.Model):
 
     market = models.CharField(max_length=50, choices=StockMarketEnum.choices)
     type = models.CharField(max_length=50, choices=StockTypeEnum.choices)
-    code = models.CharField(max_length=50, db_index=True, null=True)
+    code = models.CharField(max_length=50, db_index=True)
     name = models.CharField(max_length=100, db_index=True)

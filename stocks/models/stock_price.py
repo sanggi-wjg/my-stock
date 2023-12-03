@@ -5,7 +5,7 @@ from django.db import models
 
 
 class StockPriceQuerySet(models.QuerySet):
-    def find_recent_by_stock(self, stock):
+    def find_recent_of_stock(self, stock):
         return self.filter(stock=stock).order_by("-date").first()
 
     def filter_range(self, start_date: str, end_date: str):

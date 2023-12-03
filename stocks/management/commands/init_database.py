@@ -1,12 +1,9 @@
 from django.core.management import BaseCommand
 
-from stocks.models import Market, Stock
+from stocks.models import Stock
 
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        Market.objects.initialize_markets()
-
-        markets = Market.objects.filter_stock()
-        for market in markets:
-            Stock.objects.initialize_stocks(market.name)
+        Stock.objects.initialize_stock_indexes()
+        Stock.objects.initialize_stocks()

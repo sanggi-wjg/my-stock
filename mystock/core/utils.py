@@ -6,6 +6,8 @@ from typing import List, Tuple
 import pandas as pd
 from django.utils import timezone
 from matplotlib import dates
+from matplotlib import pyplot as plt
+from matplotlib.axes import Axes
 from matplotlib.dates import YearLocator, DateFormatter, MonthLocator
 
 
@@ -40,7 +42,7 @@ def get_now_text(date_format: str = "%Y-%m-%d %H:%M:%S") -> str:
     return timezone.now().strftime(date_format)
 
 
-def financial_crises() -> List[Tuple[str, str, str]]:
+def get_financial_crises() -> List[Tuple[str, str, str]]:
     """
     :return: 경제 위기 리스트 start date, end date, crisis 이름
     :rtype: List[Tuple[str, str, str]]
@@ -79,6 +81,49 @@ def debug_fonts():
 
     f = [f.name for f in fm.fontManager.ttflist]
     logger.debug(f)
+
+
+class ChartDrawer:
+    def __init__(self):
+        plt.rcParams["font.family"] = "Nanum Gothic"
+        plt.rcParams["figure.figsize"] = (70, 30)
+        plt.rcParams["lines.linewidth"] = 6
+        plt.rcParams["font.size"] = 40
+        plt.rcParams["axes.grid"] = True
+        plt.rcParams["axes.axisbelow"] = True
+        plt.rcParams["grid.linestyle"] = "--"
+        plt.rcParams["grid.linewidth"] = 4
+
+        self.fig = plt.figure(layout="tight")
+        self.ax = self.fig.add_subplot(111)
+        self.ax.set_ylabel("Price")
+
+    @property
+    def financial_crises(self) -> List[Tuple[str, str, str]]:
+        return get_financial_crises()
+
+    def draw_financial_crises(self, dfs: List[pd.DataFrame], i: int, ax: Axes):
+        first, last = str(dfs[i].index[0]), str(dfs[i].index[-1])
+
+        for crisis in self.financial_crises:
+            if first <= crisis[0] and crisis[1] <= last:
+                self.ax.axvspan(crisis[0], crisis[1], color="gray", alpha=0.2)
+
+    def draw_stock_prices(self, dfs: List[pd.DataFrame], legend: List[str]):
+        lines = []
+
+        for i, p in enumerate(dfs):
+            lines.append(self.ax.plot(dfs[i], color=plt_colors(i), label=dfs[i]))
+            self.draw_financial_crises(dfs, i, self.ax)
+
+        self.ax.legend([x[0] for x in lines], legend, loc="upper left")
+
+    def draw(self, dfs: List[pd.DataFrame], legend: List[str]):
+        self.draw_stock_prices(dfs, legend)
+
+        plt.grid(True, which="both", axis="x", color="gray", alpha=0.3, linestyle="--")
+        plt.show()
+        plt.close(self.fig)
 
 
 def earning_rate(df: pd.DataFrame) -> pd.DataFrame:

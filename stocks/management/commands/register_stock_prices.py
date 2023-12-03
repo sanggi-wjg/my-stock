@@ -1,11 +1,9 @@
-import math
-from datetime import timedelta, datetime
+from datetime import datetime
 from decimal import Decimal
 
 import FinanceDataReader as fdr
 from django.core.management import BaseCommand
 
-from mystock.core.constants import MARKET_TYPE_STOCK
 from mystock.core.utils import check_nan_return_or_zero, logger
 from stocks.models import Stock, StockPrice
 
@@ -13,18 +11,18 @@ log = logger
 
 
 class Command(BaseCommand):
-    def add_arguments(self, parser):
-        parser.add_argument("--stocks", nargs="+", type=str, required=True)
-        """
-        --stocks 쌍용C&E 롯데지주 현대해상 LS CJ
-        """
+    # def add_arguments(self, parser):
+    #     parser.add_argument("--stocks", nargs="+", type=str, required=True)
+    #     """
+    #     --stocks 쌍용C&E 롯데지주 현대해상 LS CJ
+    #     """
 
     def handle(self, *args, **options):
-        stocks = Stock.objects.filter(name__in=options.get("stocks", []))
-        new_stock_prices = []
+        # stocks = Stock.objects.filter(name__in=options.get("stocks", []))
+        stocks = Stock.objects.all()
 
         for stock in stocks:
-            last_stock_price = StockPrice.objects.find_recent_by_stock(stock)
+            last_stock_price = StockPrice.objects.find_recent_of_stock(stock)
 
             if last_stock_price is None:
                 dataset = fdr.DataReader(stock.code, "1980-01-01")
@@ -44,4 +42,4 @@ class Command(BaseCommand):
                 for date, row in dataset.iterrows()
             ]
             StockPrice.objects.bulk_create(new_stock_prices, batch_size=1000)
-            log.info(f"{stock.name} prices created, {len(new_stock_prices)}")
+            log.info(f"{stock.name} prices created, total rows: {len(new_stock_prices)}.")

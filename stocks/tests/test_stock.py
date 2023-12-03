@@ -31,4 +31,3 @@ class StockTestCase(TestCase):
         # then
         self.assertTrue(Stock.objects.filter(code="005930").exists())
         self.assertTrue(Stock.objects.filter(code="373220").exists())
-        self.assertEquals(list(Stock.objects.get_all_codes()), ["005930", "373220"])

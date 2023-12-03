@@ -3,16 +3,14 @@ from typing import List
 
 import pandas as pd
 from django.core.management import BaseCommand
-from matplotlib import pyplot as plt
 
 from mystock.core.utils import (
     get_now_text,
-    plt_colors,
-    financial_crises,
     logger,
     standardize,
     normalize,
     earning_rate,
+    ChartDrawer,
 )
 from stocks.models import StockPrice
 
@@ -81,30 +79,5 @@ class Command(BaseCommand):
 
             dfs.append(df)
 
-        plt.rcParams["font.family"] = "Nanum Gothic"
-        plt.rcParams["figure.figsize"] = (70, 30)
-        plt.rcParams["lines.linewidth"] = 6
-        plt.rcParams["font.size"] = 40
-        plt.rcParams["axes.grid"] = True
-        plt.rcParams["axes.axisbelow"] = True
-        plt.rcParams["grid.linestyle"] = "--"
-        plt.rcParams["grid.linewidth"] = 4
-
-        fig = plt.figure(layout="tight")
-        ax = fig.add_subplot(111)
-        ax.set_ylabel("Price")
-
-        lines = []
-
-        for i, p in enumerate(dfs):
-            lines.append(ax.plot(dfs[i], color=plt_colors(i), label=dfs[i]))
-
-            first, last = str(dfs[i].index[0]), str(dfs[i].index[-1])
-            for crisis in financial_crises():
-                if first <= crisis[0] and crisis[1] <= last:
-                    ax.axvspan(crisis[0], crisis[1], color="gray", alpha=0.2)
-
-        ax.legend([x[0] for x in lines], command_option.targets, loc="upper left")
-        plt.grid(True, which="both", axis="x", color="gray", alpha=0.3, linestyle="--")
-        plt.show()
-        plt.close(fig)
+        chart_drawer = ChartDrawer()
+        chart_drawer.draw(dfs, command_option.targets)

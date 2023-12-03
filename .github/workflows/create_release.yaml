@@ -11,31 +11,19 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
         with:
-          node-version: '14'
-
-      - name: Install Dependencies
-        run: npm install
+          fetch-depth: 0
 
       - name: Create Tag
-        id: create_tag
-        run: echo "::set-output name=tag::$(date +'%Y.%m.%d.%H')"
-
-      - name: Commit and push new tag
-        env:
-          GITHUB_TOKEN: ${{ secrets.GIT_HUB_ACCESS_TOKEN }}
-        run: |
-          git tag ${{ steps.create_tag.outputs.tag }}
-          git push origin ${{ steps.create_tag.outputs.tag }}
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.GIT_HUB_ACCESS_TOKEN }}
 
       - name: Create a GitHub release
-        if: ${{ github.event.inputs.env == 'prd' }}
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ steps.bump_version.outputs.new_version }}
-          name: Release ${{ steps.bump_version.outputs.new_version }}
+          tag: ${{ steps.tag_version.outputs.new_tag }}
+          name: Release ${{ steps.tag_version.outputs.new_tag }}
           body: ${{ steps.tag_version.outputs.changelog }}
           generateReleaseNotes: true

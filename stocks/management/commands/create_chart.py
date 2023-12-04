@@ -40,6 +40,7 @@ class Command(BaseCommand):
         parser.add_argument("-t", "--targets", nargs="+", type=str, required=True)
         """
         -t 카카오 NAVER 삼성전자 -s True
+        -t KS11 KQ11 -s True
         """
 
     def handle(self, *args, **options):
@@ -52,17 +53,17 @@ class Command(BaseCommand):
             is_earning_rate=options.get("earning"),
         )
 
-        dfs = []
+        dfs, stock_names = [], []
 
-        for stock_name in command_option.targets:
+        for target_stock in command_option.targets:
             stock_prices = (
-                StockPrice.objects.filter_name(stock_name)
+                StockPrice.objects.select_related("stock").filter_stock(target_stock)
                 .filter_range(command_option.start_date, command_option.end_date)
                 .order_by("date")
             )
             if not stock_prices.exists():
-                logger.warning(f"{stock_name} does not exist")
-                command_option.targets.pop(command_option.targets.index(stock_name))
+                logger.warning(f"{target_stock} does not exist")
+                command_option.targets.pop(command_option.targets.index(target_stock))
                 continue
 
             df = pd.DataFrame(
@@ -78,6 +79,7 @@ class Command(BaseCommand):
                 df = earning_rate(df)
 
             dfs.append(df)
+            stock_names.append(stock_prices.first().stock.name)
 
         chart_drawer = ChartDrawer()
-        chart_drawer.draw(dfs, command_option.targets)
+        chart_drawer.draw(dfs, stock_names)

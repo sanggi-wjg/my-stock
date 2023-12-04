@@ -13,10 +13,28 @@ from matplotlib.dates import YearLocator, DateFormatter, MonthLocator
 
 class MyLogger:
     def __init__(self):
+        formatter = logging.Formatter(
+            "[%(levelname)s]\t %(asctime)s\t %(pathname)s:%(lineno)d\t\t %(message)s",
+            datefmt="%Y-%m-%d %I:%M:%S",
+        )
+        stream_handler = logging.StreamHandler()
+        stream_handler.setFormatter(formatter)
+
         self.debug_logger = logging.getLogger("logger.debug")
+        self.debug_logger.setLevel(logging.DEBUG)
+        self.debug_logger.addHandler(stream_handler)
+
         self.info_logger = logging.getLogger("logger.info")
+        self.info_logger.setLevel(logging.DEBUG)
+        self.info_logger.addHandler(stream_handler)
+
         self.warn_logger = logging.getLogger("logger.warn")
+        self.warn_logger.setLevel(logging.DEBUG)
+        self.warn_logger.addHandler(stream_handler)
+
         self.error_logger = logging.getLogger("logger.error")
+        self.error_logger.setLevel(logging.DEBUG)
+        self.error_logger.addHandler(stream_handler)
 
     def debug(self, msg):
         self.debug_logger.debug(msg)

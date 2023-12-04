@@ -57,7 +57,8 @@ class Command(BaseCommand):
 
         for target_stock in command_option.targets:
             stock_prices = (
-                StockPrice.objects.select_related("stock").filter_stock(target_stock)
+                StockPrice.objects.select_related("stock")
+                .filter_stock(target_stock)
                 .filter_range(command_option.start_date, command_option.end_date)
                 .order_by("date")
             )

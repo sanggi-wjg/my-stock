@@ -147,7 +147,8 @@ class ChartDrawer:
 def earning_rate(df: pd.DataFrame) -> pd.DataFrame:
     """
     수익률
-    :return: 수익률
+    :return: 수익률 df
+    :rtype: pd.DataFrame
     """
     df = (df / df.iloc[0]) - Decimal(1.0)
     return df
@@ -155,19 +156,39 @@ def earning_rate(df: pd.DataFrame) -> pd.DataFrame:
 
 def standardize(df: pd.DataFrame) -> pd.DataFrame:
     """
-    정규화, 표준화 https://bskyvision.com/849
-    :return: 표준화
+    표준화 https://sanggi-jayg.tistory.com/entry/%ED%86%B5%EA%B3%84-%EC%A0%95%EA%B7%9C%ED%99%94Normalization%EC%99%80-%ED%91%9C%EC%A4%80%ED%99%94Standardization
+
+    [Default Formula]
+    Standard Score = (raw value - mean) / std
+
+    :return: 표준화 df
+    :rtype: pd.DataFrame
     """
     df["Price"] = pd.to_numeric(df["Price"])
     mean, std = df.mean(axis=0), df.std(axis=0)
     return (df["Price"] - mean["Price"]) / std["Price"]
 
 
-def normalize(df: pd.DataFrame) -> pd.DataFrame:
+def normalize(
+    df: pd.DataFrame, range_a: float = 0.0, range_b: float = 1.0
+) -> pd.DataFrame:
     """
-    정규화, 표준화 https://bskyvision.com/849
-    :return: 정규화
-    :rtype:
+    정규화 https://sanggi-jayg.tistory.com/entry/%ED%86%B5%EA%B3%84-%EC%A0%95%EA%B7%9C%ED%99%94Normalization%EC%99%80-%ED%91%9C%EC%A4%80%ED%99%94Standardization
+
+    Use Min-max feature scaling formula, this can be generalized to restrict of values in dataset
+
+    [Default formula]
+    Normalized Value = (raw value - min) / (max - min)
+
+    [If you want specific range, apply this formula]
+    Normalized Value = (raw value - min) / (max - min) * (range_b - range_a) + range_a
+
+    :return: 정규화 df
+    :rtype: pd.DataFrame
     """
-    max_v, min_v = df.max(axis=0), df.min(axis=0)
-    return (df["Price"] - min_v["Price"]) / (max_v["Price"] - min_v["Price"])
+    df["Price"] = pd.to_numeric(df["Price"])
+    max_ax, min_ax = df.max(axis=0), df.min(axis=0)
+    normalized_value = (df["Price"] - min_ax["Price"]) / (
+        max_ax["Price"] - min_ax["Price"]
+    )
+    return normalized_value * (range_b - range_a) + range_a

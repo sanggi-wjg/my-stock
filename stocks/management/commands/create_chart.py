@@ -22,6 +22,8 @@ class _CommandOption:
     end_date: str
     is_standardize: bool
     is_normalize: bool
+    normalize_range_a: float
+    normalize_range_b: float
     is_earning_rate: bool
 
 
@@ -34,13 +36,19 @@ class Command(BaseCommand):
         # 표준화, 정규화, 수익률
         parser.add_argument("-s", "--standardize", default=False, type=bool, help="표준화")
         parser.add_argument("-n", "--normalize", default=False, type=bool, help="정규화")
+        parser.add_argument(
+            "-na", "--normalize_range_a", default=0.0, type=float, help="기본 정규화 범위 A"
+        )
+        parser.add_argument(
+            "-nb", "--normalize_range_b", default=1.0, type=float, help="기본 정규화 범위 B"
+        )
         parser.add_argument("-e", "--earning", default=False, type=bool, help="수익률")
 
         # Targets: 주식 or 인덱스
         parser.add_argument("-t", "--targets", nargs="+", type=str, required=True)
         """
         -t 카카오 NAVER 삼성전자 -s True
-        -t KS11 KQ11 -s True
+        -t KS11 KQ11 -n True
         """
 
     def handle(self, *args, **options):
@@ -50,6 +58,8 @@ class Command(BaseCommand):
             end_date=options.get("end"),
             is_standardize=options.get("standardize"),
             is_normalize=options.get("normalize"),
+            normalize_range_a=options.get("normalize_range_a"),
+            normalize_range_b=options.get("normalize_range_b"),
             is_earning_rate=options.get("earning"),
         )
 
@@ -75,7 +85,11 @@ class Command(BaseCommand):
             if command_option.is_standardize:
                 df = standardize(df)
             if command_option.is_normalize:
-                df = normalize(df)
+                df = normalize(
+                    df,
+                    command_option.normalize_range_a,
+                    command_option.normalize_range_b,
+                )
             if command_option.is_earning_rate:
                 df = earning_rate(df)
 

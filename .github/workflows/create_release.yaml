@@ -1,4 +1,4 @@
-name: Create Release on Merge to Main
+name: '🗒️ Create Release on Merge to Main'
 
 on:
   push:

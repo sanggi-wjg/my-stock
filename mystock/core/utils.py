@@ -75,8 +75,8 @@ def get_financial_crises() -> List[Tuple[str, str, str]]:
         ("2010-03-01", "2011-11-01", "유럽 금융 위기"),
         ("2015-08-11", "2016-03-01", "위완화 평가 절하 발표"),
         ("2020-02-21", "2020-03-23", "우한 폐렴 전설의 시작"),
-        ("2021-09-18", "2021-10-01", "헝다 그룹 파산"),
-        ("2022-02-24", "2022-03-01", "러시아 우크라이나 침공"),
+        ("2021-09-18", "2021-12-28", "헝다 그룹 파산"),
+        ("2022-02-24", "2022-05-31", "러시아 우크라이나 침공"),
     ]
 
 
@@ -116,6 +116,9 @@ class ChartDrawer:
         self.ax = self.fig.add_subplot(111)
         self.ax.set_ylabel("Price")
 
+        plt.grid(True, which="both", axis="x", color="gray", alpha=0.3, linestyle="--")
+        # plt.show()
+
     @property
     def financial_crises(self) -> List[Tuple[str, str, str]]:
         return get_financial_crises()
@@ -137,11 +140,16 @@ class ChartDrawer:
         self.ax.legend([x[0] for x in lines], legend, loc="upper left")
 
     def draw(self, dfs: List[pd.DataFrame], legend: List[str]):
-        self.draw_stock_prices(dfs, legend)
+        try:
+            fname = f"{'_'.join(legend)}_{current_time_to_text()}.png"
+            self.draw_stock_prices(dfs, legend)
+            self.fig.savefig(fname)
+        finally:
+            plt.close(self.fig)
 
-        plt.grid(True, which="both", axis="x", color="gray", alpha=0.3, linestyle="--")
-        plt.show()
-        plt.close(self.fig)
+
+def current_time_to_text(date_format: str = "%Y-%m-%d %H:%M:%S") -> str:
+    return timezone.now().strftime(date_format)
 
 
 def earning_rate(df: pd.DataFrame) -> pd.DataFrame:

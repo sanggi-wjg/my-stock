@@ -13,10 +13,28 @@ from matplotlib.dates import YearLocator, DateFormatter, MonthLocator
 
 class MyLogger:
     def __init__(self):
+        formatter = logging.Formatter(
+            "[%(levelname)s]\t %(asctime)s\t %(pathname)s:%(lineno)d\t\t %(message)s",
+            datefmt="%Y-%m-%d %I:%M:%S",
+        )
+        stream_handler = logging.StreamHandler()
+        stream_handler.setFormatter(formatter)
+
         self.debug_logger = logging.getLogger("logger.debug")
+        self.debug_logger.setLevel(logging.DEBUG)
+        self.debug_logger.addHandler(stream_handler)
+
         self.info_logger = logging.getLogger("logger.info")
+        self.info_logger.setLevel(logging.DEBUG)
+        self.info_logger.addHandler(stream_handler)
+
         self.warn_logger = logging.getLogger("logger.warn")
+        self.warn_logger.setLevel(logging.DEBUG)
+        self.warn_logger.addHandler(stream_handler)
+
         self.error_logger = logging.getLogger("logger.error")
+        self.error_logger.setLevel(logging.DEBUG)
+        self.error_logger.addHandler(stream_handler)
 
     def debug(self, msg):
         self.debug_logger.debug(msg)
@@ -57,8 +75,8 @@ def get_financial_crises() -> List[Tuple[str, str, str]]:
         ("2010-03-01", "2011-11-01", "유럽 금융 위기"),
         ("2015-08-11", "2016-03-01", "위완화 평가 절하 발표"),
         ("2020-02-21", "2020-03-23", "우한 폐렴 전설의 시작"),
-        ("2021-09-18", "2021-10-01", "헝다 그룹 파산"),
-        ("2022-02-24", "2022-03-01", "러시아 우크라이나 침공"),
+        ("2021-09-18", "2021-12-28", "헝다 그룹 파산"),
+        ("2022-02-24", "2022-05-31", "러시아 우크라이나 침공"),
     ]
 
 
@@ -86,7 +104,7 @@ def debug_fonts():
 class ChartDrawer:
     def __init__(self):
         plt.rcParams["font.family"] = "Nanum Gothic"
-        plt.rcParams["figure.figsize"] = (70, 30)
+        plt.rcParams["figure.figsize"] = (80, 40)
         plt.rcParams["lines.linewidth"] = 6
         plt.rcParams["font.size"] = 40
         plt.rcParams["axes.grid"] = True
@@ -97,6 +115,15 @@ class ChartDrawer:
         self.fig = plt.figure(layout="tight")
         self.ax = self.fig.add_subplot(111)
         self.ax.set_ylabel("Price")
+
+        plt.grid(True, which="both", axis="x", color="gray", alpha=0.3, linestyle="--")
+        # plt.show()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        plt.close(self.fig)
 
     @property
     def financial_crises(self) -> List[Tuple[str, str, str]]:
@@ -119,17 +146,20 @@ class ChartDrawer:
         self.ax.legend([x[0] for x in lines], legend, loc="upper left")
 
     def draw(self, dfs: List[pd.DataFrame], legend: List[str]):
+        fname = f"{'_'.join(legend)}_{current_time_to_text()}.png"
         self.draw_stock_prices(dfs, legend)
+        self.fig.savefig(fname)
 
-        plt.grid(True, which="both", axis="x", color="gray", alpha=0.3, linestyle="--")
-        plt.show()
-        plt.close(self.fig)
+
+def current_time_to_text(date_format: str = "%Y-%m-%d %H:%M:%S") -> str:
+    return timezone.now().strftime(date_format)
 
 
 def earning_rate(df: pd.DataFrame) -> pd.DataFrame:
     """
     수익률
-    :return: 수익률
+    :return: 수익률 df
+    :rtype: pd.DataFrame
     """
     df = (df / df.iloc[0]) - Decimal(1.0)
     return df
@@ -137,19 +167,39 @@ def earning_rate(df: pd.DataFrame) -> pd.DataFrame:
 
 def standardize(df: pd.DataFrame) -> pd.DataFrame:
     """
-    정규화, 표준화 https://bskyvision.com/849
-    :return: 표준화
+    표준화 https://sanggi-jayg.tistory.com/entry/%ED%86%B5%EA%B3%84-%EC%A0%95%EA%B7%9C%ED%99%94Normalization%EC%99%80-%ED%91%9C%EC%A4%80%ED%99%94Standardization
+
+    [Default Formula]
+    Standard Score = (raw value - mean) / std
+
+    :return: 표준화 df
+    :rtype: pd.DataFrame
     """
     df["Price"] = pd.to_numeric(df["Price"])
     mean, std = df.mean(axis=0), df.std(axis=0)
     return (df["Price"] - mean["Price"]) / std["Price"]
 
 
-def normalize(df: pd.DataFrame) -> pd.DataFrame:
+def normalize(
+    df: pd.DataFrame, range_a: float = 0.0, range_b: float = 1.0
+) -> pd.DataFrame:
     """
-    정규화, 표준화 https://bskyvision.com/849
-    :return: 정규화
-    :rtype:
+    정규화 https://sanggi-jayg.tistory.com/entry/%ED%86%B5%EA%B3%84-%EC%A0%95%EA%B7%9C%ED%99%94Normalization%EC%99%80-%ED%91%9C%EC%A4%80%ED%99%94Standardization
+
+    Use Min-max feature scaling formula, this can be generalized to restrict of values in dataset
+
+    [Default formula]
+    Normalized Value = (raw value - min) / (max - min)
+
+    [If you want specific range, apply this formula]
+    Normalized Value = (raw value - min) / (max - min) * (range_b - range_a) + range_a
+
+    :return: 정규화 df
+    :rtype: pd.DataFrame
     """
-    max_v, min_v = df.max(axis=0), df.min(axis=0)
-    return (df["Price"] - min_v["Price"]) / (max_v["Price"] - min_v["Price"])
+    df["Price"] = pd.to_numeric(df["Price"])
+    max_ax, min_ax = df.max(axis=0), df.min(axis=0)
+    normalized_value = (df["Price"] - min_ax["Price"]) / (
+        max_ax["Price"] - min_ax["Price"]
+    )
+    return normalized_value * (range_b - range_a) + range_a

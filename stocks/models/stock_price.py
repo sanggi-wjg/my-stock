@@ -2,6 +2,7 @@ from datetime import timedelta
 from decimal import Decimal
 
 from django.db import models
+from django.db.models import Q
 
 
 class StockPriceQuerySet(models.QuerySet):
@@ -14,8 +15,9 @@ class StockPriceQuerySet(models.QuerySet):
             date__lte=end_date,
         )
 
-    def filter_name(self, stock_name: str):
-        return self.filter(stock__name=stock_name)
+    def filter_stock(self, stock_name: str):
+        condition = Q(stock__name=stock_name) | Q(stock__code=stock_name)
+        return self.filter(condition)
 
 
 class StockPrice(models.Model):

@@ -104,7 +104,7 @@ def debug_fonts():
 class ChartDrawer:
     def __init__(self):
         plt.rcParams["font.family"] = "Nanum Gothic"
-        plt.rcParams["figure.figsize"] = (70, 30)
+        plt.rcParams["figure.figsize"] = (80, 40)
         plt.rcParams["lines.linewidth"] = 6
         plt.rcParams["font.size"] = 40
         plt.rcParams["axes.grid"] = True
@@ -118,6 +118,12 @@ class ChartDrawer:
 
         plt.grid(True, which="both", axis="x", color="gray", alpha=0.3, linestyle="--")
         # plt.show()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        plt.close(self.fig)
 
     @property
     def financial_crises(self) -> List[Tuple[str, str, str]]:
@@ -140,12 +146,9 @@ class ChartDrawer:
         self.ax.legend([x[0] for x in lines], legend, loc="upper left")
 
     def draw(self, dfs: List[pd.DataFrame], legend: List[str]):
-        try:
-            fname = f"{'_'.join(legend)}_{current_time_to_text()}.png"
-            self.draw_stock_prices(dfs, legend)
-            self.fig.savefig(fname)
-        finally:
-            plt.close(self.fig)
+        fname = f"{'_'.join(legend)}_{current_time_to_text()}.png"
+        self.draw_stock_prices(dfs, legend)
+        self.fig.savefig(fname)
 
 
 def current_time_to_text(date_format: str = "%Y-%m-%d %H:%M:%S") -> str:

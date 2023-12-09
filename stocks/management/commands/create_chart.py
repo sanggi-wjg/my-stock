@@ -96,5 +96,5 @@ class Command(BaseCommand):
             dfs.append(df)
             stock_names.append(stock_prices.first().stock.name)
 
-        chart_drawer = ChartDrawer()
-        chart_drawer.draw(dfs, stock_names)
+        with ChartDrawer() as chart_drawer:
+            chart_drawer.draw(dfs, stock_names)

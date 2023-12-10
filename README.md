@@ -25,3 +25,8 @@
 * https://github.com/FinanceData/FinanceDataReader
 * https://codetorial.net/matplotlib/basics.html
 
+#### Pytest
+
+* https://pytest-django.readthedocs.io/en/latest/usage.html
+* https://pytest.org/en/stable/getting-started.html
+

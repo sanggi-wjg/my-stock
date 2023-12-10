@@ -1,30 +1,33 @@
-from unittest.mock import patch
+from unittest import TestCase
 
-import pandas as pd
-from django.test import TestCase
-
+from mystock.core.constants import INDEXES
 from stocks.models import Stock
+from stocks.tests.test_base import TestBase
 
 
-class StockTestCase(TestCase):
-    def setUp(self):
-        pass
-
-    @patch(
-        "mystock.core.fdr_client.StockFdr.stock_listing",
-        return_value=pd.DataFrame(
-            [
-                ["005930", "삼성전자"],
-                ["373220", "LG에너지솔루션"],
-            ],
-            columns=["Code", "Name"],
-        ),
-    )
-    def test_initialize(self, mock):
+class TestStock(TestBase):
+    def test_initialize_stocks(self):
         # given
+        Stock.objects.initialize_stocks()
+        self.assert_true(Stock.objects.count() == 2)
+
         # when
         Stock.objects.initialize_stocks()
+        self.assert_true(Stock.objects.count() == 2)
 
         # then
-        self.assertTrue(Stock.objects.filter(code="005930").exists())
-        self.assertTrue(Stock.objects.filter(code="373220").exists())
+        self.assert_true(Stock.objects.filter(code="005930").exists())
+        self.assert_true(Stock.objects.filter(code="373220").exists())
+
+    def test_initialize_stock_indexes(self):
+        # given
+        Stock.objects.initialize_stock_indexes()
+        self.assert_true(len(INDEXES) == Stock.objects.filter_index().count())
+
+        # when
+        Stock.objects.initialize_stock_indexes()
+        self.assert_true(len(INDEXES) == Stock.objects.filter_index().count())
+
+        # then
+        for code, name in INDEXES:
+            self.assert_true(Stock.objects.filter(code=code, name=name).exists())

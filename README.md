@@ -1,5 +1,9 @@
 # my stock
 
+[![🧪 Black and Test](https://github.com/sanggi-wjg/my-stock/actions/workflows/lint_and_test.yml/badge.svg)](https://github.com/sanggi-wjg/my-stock/actions/workflows/lint_and_test.yml)
+[![🫚 Dependency Review](https://github.com/sanggi-wjg/my-stock/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/sanggi-wjg/my-stock/actions/workflows/dependency-review.yml)
+[![🗒️ Create Release on Merge to Main](https://github.com/sanggi-wjg/my-stock/actions/workflows/create_release.yaml/badge.svg)](https://github.com/sanggi-wjg/my-stock/actions/workflows/create_release.yaml)
+
 <details>
 <summary>코스피, 코스닥</summary>
 

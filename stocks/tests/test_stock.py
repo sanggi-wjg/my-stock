@@ -9,25 +9,25 @@ class TestStock(TestBase):
     def test_initialize_stocks(self):
         # given
         Stock.objects.initialize_stocks()
-        self.assert_true(Stock.objects.count() == 2)
+        assert Stock.objects.count() == 8
 
         # when
         Stock.objects.initialize_stocks()
-        self.assert_true(Stock.objects.count() == 2)
+        assert Stock.objects.count() == 8
 
         # then
-        self.assert_true(Stock.objects.filter(code="005930").exists())
-        self.assert_true(Stock.objects.filter(code="373220").exists())
+        assert Stock.objects.filter(code="005930").exists()
+        assert Stock.objects.filter(code="373220").exists()
 
     def test_initialize_stock_indexes(self):
         # given
         Stock.objects.initialize_stock_indexes()
-        self.assert_true(len(INDEXES) == Stock.objects.filter_index().count())
+        assert Stock.objects.filter_index().count() == len(INDEXES)
 
         # when
         Stock.objects.initialize_stock_indexes()
-        self.assert_true(len(INDEXES) == Stock.objects.filter_index().count())
+        assert Stock.objects.filter_index().count() == len(INDEXES)
 
         # then
         for code, name in INDEXES:
-            self.assert_true(Stock.objects.filter(code=code, name=name).exists())
+            assert Stock.objects.filter(code=code, name=name).exists()

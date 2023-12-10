@@ -2,6 +2,7 @@ from datetime import datetime
 
 import FinanceDataReader as fdr
 from django.core.management import BaseCommand
+from django.db.models import Q
 
 from mystock.core.utils import check_nan_return_or_zero, logger
 from stocks.models import Stock, StockPrice
@@ -11,15 +12,17 @@ log = logger
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
-        parser.add_argument("--stocks", nargs="+", type=str, default=[], required=False)
+        parser.add_argument(
+            "--markets", nargs="+", type=str, default=[], required=False
+        )
         """
-        --stocks 쌍용C&E 롯데지주 현대해상 LS CJ
+        --markets KOSPI, S&P500
         """
 
     def handle(self, *args, **options):
-        stocks = Stock.objects.all()
-        if len(options["stocks"]) > 0:
-            stocks = stocks.filter(name__in=options["stocks"])
+        stocks = Stock.objects.exclude_nasdaq()
+        if len(options["markets"]) > 0:
+            stocks = stocks.filter_markets(options["markets"])
 
         for stock in stocks:
             last_stock_price = StockPrice.objects.find_recent_of_stock(stock)

@@ -1,4 +1,7 @@
+from typing import List
+
 from django.db import models
+from django.db.models import Q
 
 from mystock.core.constants import INDEXES, DEFAULT_BATCH_SIZE
 from mystock.core.fdr_client import StockFdr
@@ -9,10 +12,25 @@ class StockMarketEnum(models.TextChoices):
     KOSPI = "KOSPI"
     KOSDAQ = "KOSDAQ"
     # 미국
-    # SNP500 = "S&P500"
-    # NASDAQ = "NASDAQ"
+    SNP500 = "S&P500"
+    NASDAQ = "NASDAQ"
     # 인덱스
     GLOBAL_INDEX = "GLOBAL_INDEX"
+
+    def is_index(self):
+        return self == self.GLOBAL_INDEX
+
+    def is_use_code(self):
+        return self in [
+            StockMarketEnum.KOSPI,
+            StockMarketEnum.KOSDAQ,
+        ]
+
+    def is_use_ticker(self):
+        return self in [
+            StockMarketEnum.SNP500,
+            StockMarketEnum.NASDAQ,
+        ]
 
 
 class StockTypeEnum(models.TextChoices):
@@ -22,26 +40,39 @@ class StockTypeEnum(models.TextChoices):
 
 class StockQuerySet(models.QuerySet):
     def initialize_stocks(self):
-        for value, _ in StockMarketEnum.choices:
-            if value == StockMarketEnum.GLOBAL_INDEX:
+        market_enum: StockMarketEnum
+
+        for market_enum in StockMarketEnum:
+            if market_enum.is_index():
                 continue
 
-            exist_stock_codes = self.filter(type=StockTypeEnum.STOCK).values_list(
-                "code", flat=True
-            )
+            market_name = market_enum.value
+            exist_stock_codes = self.filter(
+                type=StockTypeEnum.STOCK, market=market_name
+            ).values_list("code", flat=True)
 
-            dataset = StockFdr.stock_listing(value)
-            not_exist_stocks = [
-                row
-                for date, row in dataset.iterrows()
-                if row["Code"] not in exist_stock_codes
-            ]
+            not_exist_stocks = []
+            dataset = StockFdr.stock_listing(market_name)
+
+            if market_enum.is_use_code():
+                not_exist_stocks = [
+                    row
+                    for date, row in dataset.iterrows()
+                    if row["Code"] not in exist_stock_codes
+                ]
+
+            if market_enum.is_use_ticker():
+                not_exist_stocks = [
+                    row
+                    for date, row in dataset.iterrows()
+                    if row["Symbol"] not in exist_stock_codes
+                ]
 
             new_stocks = [
                 Stock(
-                    market=value,
+                    market=market_name,
                     type=StockTypeEnum.STOCK,
-                    code=row["Code"],
+                    code=row["Code"] if market_enum.is_use_code() else row["Symbol"],
                     name=row["Name"],
                 )
                 for row in not_exist_stocks
@@ -74,6 +105,15 @@ class StockQuerySet(models.QuerySet):
 
     def filter_index(self):
         return self.filter(type=StockTypeEnum.INDEX)
+
+    def filter_markets(self, markets: List[str]):
+        return self.filter(market__in=markets)
+
+    def filter_names(self, names: List[str]):
+        return self.filter(Q(name__in=names) | Q(code__in=names))
+
+    def exclude_nasdaq(self):
+        return self.exclude(market=StockMarketEnum.NASDAQ)
 
 
 class Stock(models.Model):

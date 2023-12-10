@@ -1,6 +1,8 @@
 import pytest
 import pandas as pd
 
+from stocks.models import Stock, StockTypeEnum
+
 
 @pytest.fixture(autouse=True)
 def mock_fake_stock_listing(mocker):
@@ -14,3 +16,27 @@ def mock_fake_stock_listing(mocker):
             columns=["Code", "Name"],
         ),
     )
+
+
+@pytest.fixture
+def stock_fixture():
+    stock = Stock(
+        market="KOSPI",
+        type=StockTypeEnum.STOCK,
+        code="005930",
+        name="삼성전자",
+    )
+    stock.save()
+    return stock
+
+
+@pytest.fixture
+def stock_index_fixture():
+    stock = Stock(
+        market="INDEX",
+        type=StockTypeEnum.INDEX,
+        code="KS11",
+        name="KOSPI",
+    )
+    stock.save()
+    return stock

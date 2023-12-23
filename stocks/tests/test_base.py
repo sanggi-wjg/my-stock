@@ -14,9 +14,3 @@ class TestBase:
     def teardown_class(cls):
         # TEAR DOWN CLASS BASE
         pass
-
-    def assert_true(self, expr):
-        assert expr
-
-    def assert_false(self, expr):
-        assert not expr

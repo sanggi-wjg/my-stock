@@ -10,10 +10,10 @@ def mock_fake_stock_listing(mocker):
         "mystock.core.fdr_client.StockFdr.stock_listing",
         return_value=pd.DataFrame(
             [
-                ["005930", "삼성전자"],
-                ["373220", "LG에너지솔루션"],
+                ["005930", "005930", "삼성전자"],
+                ["373220", "373220", "LG에너지솔루션"],
             ],
-            columns=["Code", "Name"],
+            columns=["Code", "Symbol", "Name"],
         ),
     )
 

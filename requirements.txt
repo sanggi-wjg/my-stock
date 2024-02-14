@@ -43,4 +43,4 @@ tenacity==8.2.3
 thread-manager-py==0.3.0
 tqdm==4.66.1
 tzdata==2023.3
-urllib3==2.1.0
+urllib3==2.2.0

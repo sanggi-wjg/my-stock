@@ -20,6 +20,12 @@
 ![NAVER_NHN_카카오_2023-12-09 12:01:44.png](docs%2F.image%2FNAVER_NHN_%EC%B9%B4%EC%B9%B4%EC%98%A4_2023-12-09%2012%3A01%3A44.png)
 </details>
 
+<details>
+<summary>금, 코스피</summary>
+
+![금_KOSPI_2024-02-19 04:48:12.png](docs%2F%EA%B8%88_KOSPI_2024-02-19%2004%3A48%3A12.png)
+</details>
+
 ### Ref
 
 * https://github.com/FinanceData/FinanceDataReader

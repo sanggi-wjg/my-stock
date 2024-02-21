@@ -7,7 +7,7 @@ click==8.1.7
 colorful-print==0.1.0
 contourpy==1.2.0
 cycler==0.12.1
-Django==4.2.7
+Django==4.2.10
 finance-datareader==0.9.70
 fonttools==4.47.2
 idna==3.6

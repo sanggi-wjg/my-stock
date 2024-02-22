@@ -7,11 +7,8 @@ from django.core.management import BaseCommand
 from mystock.core.utils import (
     get_now_text,
     logger,
-    standardize,
-    normalize,
-    earning_rate,
-    ChartDrawer,
 )
+from mystock.core.utils_chart import standardize, normalize, earning_rate, ChartDrawer
 from stocks.models import StockPrice
 
 
@@ -49,6 +46,7 @@ class Command(BaseCommand):
         """
         -t 카카오 NAVER 삼성전자 -s True
         -t KS11 KQ11 -n True
+        -t KS11 GC=F -n True
         """
 
     def handle(self, *args, **options):

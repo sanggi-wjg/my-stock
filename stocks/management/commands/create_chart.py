@@ -31,13 +31,25 @@ class Command(BaseCommand):
         parser.add_argument("--end", default=get_now_text("%Y-%m-%d"), type=str)
 
         # 표준화, 정규화, 수익률
-        parser.add_argument("-s", "--standardize", default=False, type=bool, help="표준화")
-        parser.add_argument("-n", "--normalize", default=False, type=bool, help="정규화")
         parser.add_argument(
-            "-na", "--normalize_range_a", default=0.0, type=float, help="기본 정규화 범위 A"
+            "-s", "--standardize", default=False, type=bool, help="표준화"
         )
         parser.add_argument(
-            "-nb", "--normalize_range_b", default=1.0, type=float, help="기본 정규화 범위 B"
+            "-n", "--normalize", default=False, type=bool, help="정규화"
+        )
+        parser.add_argument(
+            "-na",
+            "--normalize_range_a",
+            default=0.0,
+            type=float,
+            help="기본 정규화 범위 A",
+        )
+        parser.add_argument(
+            "-nb",
+            "--normalize_range_b",
+            default=1.0,
+            type=float,
+            help="기본 정규화 범위 B",
         )
         parser.add_argument("-e", "--earning", default=False, type=bool, help="수익률")
 
